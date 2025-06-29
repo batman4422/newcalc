@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Scientific Calculator</title>
+    <style>
+        body { font-family: Arial; text-align: center; padding: 20px; }
+        input, button { font-size: 20px; padding: 10px; margin: 5px; width: 70px; }
+        #display { width: 300px; font-size: 24px; text-align: right; }
+        .buttons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; justify-content: center; }
+    </style>
+</head>
+<body>
+    <h2>Scientific Calculator</h2>
+    <input type="text" id="display" readonly><br>
+    <div class="buttons">
+        <button onclick="append('sin(')">sin</button>
+        <button onclick="append('cos(')">cos</button>
+        <button onclick="append('tan(')">tan</button>
+        <button onclick="append('log(')">log</button>
+
+        <button onclick="append('sqrt(')">√</button>
+        <button onclick="append('exp(')">exp</button>
+        <button onclick="append('π')">π</button>
+        <button onclick="append('^')">^</button>
+
+        <button onclick="append('7')">7</button>
+        <button onclick="append('8')">8</button>
+        <button onclick="append('9')">9</button>
+        <button onclick="append('/')">/</button>
+
+        <button onclick="append('4')">4</button>
+        <button onclick="append('5')">5</button>
+        <button onclick="append('6')">6</button>
+        <button onclick="append('*')">*</button>
+
+        <button onclick="append('1')">1</button>
+        <button onclick="append('2')">2</button>
+        <button onclick="append('3')">3</button>
+        <button onclick="append('-')">-</button>
+
+        <button onclick="append('0')">0</button>
+        <button onclick="append('.')">.</button>
+        <button onclick="append('+')">+</button>
+        <button onclick="clearDisplay()">C</button>
+
+        <button onclick="delChar()">DEL</button>
+        <button onclick="calculate()" colspan="2">=</button>
+    </div>
+
+    <script>
+        function append(val) {
+            document.getElementById("display").value += val;
+        }
+
+        function clearDisplay() {
+            document.getElementById("display").value = "";
+        }
+
+        function delChar() {
+            let val = document.getElementById("display").value;
+            document.getElementById("display").value = val.slice(0, -1);
+        }
+
+        async function calculate() {
+            const expression = document.getElementById("display").value;
+            const res = await fetch("/calculate", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ expression })
+            });
+            const data = await res.json();
+            document.getElementById("display").value = data.result;
+        }
+    </script>
+</body>
+</html>
